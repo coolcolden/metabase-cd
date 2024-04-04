@@ -14,13 +14,9 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   container_name = "ecs-sample"
-  container_port = 80
+  container_port = var.app_container_port
 
-  tags = {
-    Name       = local.name
-    Example    = local.name
-    Repository = "https://github.com/terraform-aws-modules/terraform-aws-ecs"
-  }
+  tags = var.tags
 }
 
 ################################################################################
@@ -241,58 +237,61 @@ module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "~> 6.5"
 
-  for_each = {
+  for_each = merge({
     # On-demand instances
     ex_1 = {
-      instance_type              = "t3.large"
+      instance_type              = var.instance_type_ondemand
       use_mixed_instances_policy = false
       mixed_instances_policy     = {}
       user_data                  = <<-EOT
-        #!/bin/bash
+            #!/bin/bash
 
-        cat <<'EOF' >> /etc/ecs/ecs.config
-        ECS_CLUSTER=${local.name}
-        ECS_LOGLEVEL=debug
-        ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(local.tags)}
-        ECS_ENABLE_TASK_IAM_ROLE=true
-        EOF
-      EOT
+            cat <<'EOF' >> /etc/ecs/ecs.config
+            ECS_CLUSTER=${local.name}
+            ECS_LOGLEVEL=debug
+            ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(local.tags)}
+            ECS_ENABLE_TASK_IAM_ROLE=true
+            EOF
+        EOT
     }
+    },
     # Spot instances
-    ex_2 = {
-      instance_type              = "t3.medium"
-      use_mixed_instances_policy = true
-      mixed_instances_policy = {
-        instances_distribution = {
-          on_demand_base_capacity                  = 0
-          on_demand_percentage_above_base_capacity = 0
-          spot_allocation_strategy                 = "price-capacity-optimized"
+    var.ecs_enable_spot == false ? {} : {
+      ex_2 = {
+        instance_type              = var.instance_type_spot
+        use_mixed_instances_policy = true
+        mixed_instances_policy = {
+          instances_distribution = {
+            on_demand_base_capacity                  = 0
+            on_demand_percentage_above_base_capacity = 0
+            spot_allocation_strategy                 = "price-capacity-optimized"
+          }
+
+          override = [
+            {
+              instance_type     = "m4.large"
+              weighted_capacity = "2"
+            },
+            {
+              instance_type     = "t3.large"
+              weighted_capacity = "1"
+            },
+          ]
         }
+        user_data = <<-EOT
+            #!/bin/bash
 
-        override = [
-          {
-            instance_type     = "m4.large"
-            weighted_capacity = "2"
-          },
-          {
-            instance_type     = "t3.large"
-            weighted_capacity = "1"
-          },
-        ]
+            cat <<'EOF' >> /etc/ecs/ecs.config
+            ECS_CLUSTER=${local.name}
+            ECS_LOGLEVEL=debug
+            ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(local.tags)}
+            ECS_ENABLE_TASK_IAM_ROLE=true
+            ECS_ENABLE_SPOT_INSTANCE_DRAINING=true
+            EOF
+        EOT
       }
-      user_data = <<-EOT
-        #!/bin/bash
-
-        cat <<'EOF' >> /etc/ecs/ecs.config
-        ECS_CLUSTER=${local.name}
-        ECS_LOGLEVEL=debug
-        ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(local.tags)}
-        ECS_ENABLE_TASK_IAM_ROLE=true
-        ECS_ENABLE_SPOT_INSTANCE_DRAINING=true
-        EOF
-      EOT
     }
-  }
+  )
 
   name = "${local.name}-${each.key}"
 
@@ -313,9 +312,9 @@ module "autoscaling" {
 
   vpc_zone_identifier = module.vpc.private_subnets
   health_check_type   = "EC2"
-  min_size            = 1
+  min_size            = var.ecs_min_size
   max_size            = 5
-  desired_capacity    = 2
+  desired_capacity    = var.ecs_desired_capacity
 
   # https://github.com/hashicorp/terraform-provider-aws/issues/12582
   autoscaling_group_tags = {
@@ -366,6 +365,62 @@ module "vpc" {
 
   enable_nat_gateway = true
   single_nat_gateway = true
+
+  tags = local.tags
+}
+
+
+module "db_default" {
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 6.5.4"
+
+  identifier                     = "${local.name}-default"
+  instance_use_identifier_prefix = true
+
+  create_db_option_group    = false
+  create_db_parameter_group = false
+
+  engine               = "postgres"
+  engine_version       = "14"
+  family               = "postgres14" # DB parameter group
+  major_engine_version = "14"         # DB option group
+  instance_class       = "db.t4g.micro"
+
+  allocated_storage = 10
+
+  db_name  = "metabase"
+  username = "complete_postgresql"
+  port     = 5432
+
+  db_subnet_group_name   = module.vpc.database_subnet_group
+  vpc_security_group_ids = [module.rds_security_group.security_group_id]
+
+  maintenance_window      = "Mon:00:00-Mon:03:00"
+  backup_window           = "03:00-06:00"
+  backup_retention_period = 0
+
+  tags = local.tags
+}
+
+
+module "rds_security_group" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 5.0"
+
+  name        = local.name
+  description = "PostgreSQL security group"
+  vpc_id      = module.vpc.vpc_id
+
+  # ingress
+  ingress_with_source_security_group_id = [
+    {
+      from_port         = 5432
+      to_port           = 5432
+      protocol          = "tcp"
+      description       = "PostgreSQL access from within ECS Instances (SG)"
+      security_group_id = module.autoscaling_sg.security_group_id
+    },
+  ]
 
   tags = local.tags
 }
