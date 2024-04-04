@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: .config$
+      - id: end-of-file-fixer
+        exclude: .config$
+      - id: check-added-large-files
+      - id: detect-aws-credentials
+      - id: detect-private-key
+      - id: check-merge-conflict
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.4
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_docs
+      # - id: tfupdate
+      #   name: Autoupdate Terraform versions
+      # - id: terraform_checkov
+      #   args:
+      #     - --args=--quiet
+      #     # - --args=--skip-check CKV2_AWS_8
+
+    # GitHub Actions hooks
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.28.1
+    hooks:
+      - id: check-github-actions
+      - id: check-github-workflows
