@@ -1,4 +1,4 @@
-#Mostly from : https://github.com/terraform-aws-modules/terraform-aws-ecs/tree/v5.11.0/examples/ec2-autoscaling
+# Mostly from : https://github.com/terraform-aws-modules/terraform-aws-ecs/tree/v5.11.0/examples/ec2-autoscaling
 
 provider "aws" {
   region = local.region
@@ -7,10 +7,10 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  region = "eu-west-1"
-  name   = "ex-${basename(path.cwd)}"
+  region = var.region
+  name   = var.ecs_cluster_name
 
-  vpc_cidr = "10.0.0.0/16"
+  vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   container_name = "ecs-sample"
@@ -78,7 +78,8 @@ module "ecs_cluster" {
 ################################################################################
 
 module "ecs_service" {
-  source = "../../modules/service"
+  source  = "terraform-aws-modules/ecs/aws//modules/service"
+  version = "~> 5.6"
 
   # Service
   name        = local.name
