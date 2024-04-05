@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.tf'
+      - '.github/workflows/terraform.yml'
+
+jobs:
+  terraform:
+    name: "Deploy AWS and Application"
+    runs-on: ubuntu-latest
+    env:
+      TF_WORKSPACE: "default"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ~1.7.5
+
+      - uses: tchupp/actions-terraform-pr@v1
+        with:
+          apply-branch: "main"
