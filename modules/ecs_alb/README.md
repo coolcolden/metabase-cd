@@ -54,7 +54,7 @@ AWS and ECS Provisioning
 | <a name="input_region"></a> [region](#input\_region) | The region to create all stack | `string` | `"us-west-1"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to use on resources | `map(string)` | <pre>{<br>  "Name": "metabase",<br>  "Repository": "https://github.com/terraform-aws-modules/terraform-aws-ecs"<br>}</pre> | no |
 | <a name="input_task_cpu"></a> [task\_cpu](#input\_task\_cpu) | CPU to request to ECS in milliCPU, valid values, should correlate to `task_memory`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html | `number` | `256` | no |
-| <a name="input_task_memory"></a> [task\_memory](#input\_task\_memory) | Memory to allocate, in MB, valid values here, should correlate to `task_cpu`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html | `number` | `512` | no |
+| <a name="input_task_memory"></a> [task\_memory](#input\_task\_memory) | Memory to allocate, in MB, valid values here, should correlate to `task_cpu`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html | `number` | `1024` | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | VPC CIDR | `string` | `"10.0.0.0/16"` | no |
 
 ## Outputs
