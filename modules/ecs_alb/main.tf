@@ -13,7 +13,7 @@ locals {
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  container_name = "ecs-sample"
+  container_name = "metabase"
   container_port = var.app_container_port
 
   tags = var.tags
