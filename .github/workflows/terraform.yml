@@ -27,10 +27,19 @@ jobs:
         with:
           terraform_version: ~1.7.5
 
-      - uses: tchupp/actions-terraform-pr@v1
+      - name: Plan when PR execute when Main
+        uses: tchupp/actions-terraform-pr@v1
         with:
           apply-branch: "main"
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_DEFAULT_REGION: ${{env.AWS_DEFAULT_REGION}}
+          AWS_DEFAULT_REGION: ${{vars.AWS_DEFAULT_REGION}}
+
+      - name: Terraform outputs
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo '# Terraform Output' >> $GITHUB_SUMMARY
+          echo '```' >> $GITHUB_SUMMARY
+          terraform output >> $GITHUB_SUMMARY
+          echo '```' >> $GITHUB_SUMMARY
