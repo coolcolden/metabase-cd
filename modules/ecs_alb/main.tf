@@ -11,7 +11,7 @@ locals {
   name   = var.ecs_cluster_name
 
   vpc_cidr = var.vpc_cidr
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
 
   container_name = "metabase"
   container_port = var.app_container_port
