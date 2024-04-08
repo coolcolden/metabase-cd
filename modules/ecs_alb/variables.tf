@@ -43,6 +43,12 @@ variable "app_container_port" {
   default     = 3000
 }
 
+variable "app_env_vars" {
+  description = "A set of environment variables to be exposed to the container's app"
+  type        = map(string)
+  default     = {}
+}
+
 variable "instance_type_ondemand" {
   description = "The instance type for the onDemand nodes"
   type        = string

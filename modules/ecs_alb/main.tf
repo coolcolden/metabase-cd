@@ -117,8 +117,8 @@ module "ecs_service" {
           containerPath = "/var/www/my-vol"
         }
       ]
+      "environment" : [for k, v in var.app_env_vars : { "name" : k, "value" : v }]
 
-      # Example image used requires access to write to root filesystem
       readonly_root_filesystem = false
 
       enable_cloudwatch_logging              = true
