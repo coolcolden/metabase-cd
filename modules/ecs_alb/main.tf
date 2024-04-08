@@ -82,7 +82,7 @@ module "ecs_service" {
 
   # Service
   name        = local.name
-  cluster_arn = module.ecs_cluster.arn
+  cluster_arn = module.ecs_cluster.cluster_arn
 
   # Task Definition
   requires_compatibilities = ["EC2"]
