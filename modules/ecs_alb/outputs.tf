@@ -4,17 +4,17 @@
 
 output "cluster_arn" {
   description = "ARN that identifies the cluster"
-  value       = module.ecs_cluster.arn
+  value       = module.ecs_cluster.cluster_arn
 }
 
 output "cluster_id" {
   description = "ID that identifies the cluster"
-  value       = module.ecs_cluster.id
+  value       = module.ecs_cluster.cluster_id
 }
 
 output "cluster_name" {
   description = "Name that identifies the cluster"
-  value       = module.ecs_cluster.name
+  value       = module.ecs_cluster.cluster_name
 }
 
 output "cluster_capacity_providers" {
@@ -232,4 +232,9 @@ output "db_default_master_user_secret_arn" {
 output "db_default_secretsmanager_secret_rotation_enabled" {
   description = "Specifies whether automatic rotation is enabled for the secret"
   value       = module.db_default.db_instance_secretsmanager_secret_rotation_enabled
+}
+
+output "dns_name" {
+  description = "The DNS name of the load balancer"
+  value       = module.alb.dns_name
 }

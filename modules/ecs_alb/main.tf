@@ -33,41 +33,44 @@ module "ecs_cluster" {
 
   # Capacity provider - autoscaling groups
   default_capacity_provider_use_fargate = false
-  autoscaling_capacity_providers = {
-    # On-demand instances
-    ex_1 = {
-      auto_scaling_group_arn         = module.autoscaling["ex_1"].autoscaling_group_arn
-      managed_termination_protection = "ENABLED"
+  autoscaling_capacity_providers = merge(
+    {
+      # On-demand instances
+      pool1 = {
+        auto_scaling_group_arn         = module.autoscaling["pool1"].autoscaling_group_arn
+        managed_termination_protection = "ENABLED"
 
-      managed_scaling = {
-        maximum_scaling_step_size = 5
-        minimum_scaling_step_size = 1
-        status                    = "ENABLED"
-        target_capacity           = 60
+        managed_scaling = {
+          maximum_scaling_step_size = 5
+          minimum_scaling_step_size = 1
+          status                    = "ENABLED"
+          target_capacity           = 60
+        }
+
+        default_capacity_provider_strategy = {
+          weight = 60
+          base   = 20
+        }
       }
+    },
+    var.ecs_enable_spot == false ? {} : {
+      pool2 = {
+        auto_scaling_group_arn         = module.autoscaling["pool2"].autoscaling_group_arn
+        managed_termination_protection = "ENABLED"
 
-      default_capacity_provider_strategy = {
-        weight = 60
-        base   = 20
+        managed_scaling = {
+          maximum_scaling_step_size = 15
+          minimum_scaling_step_size = 5
+          status                    = "ENABLED"
+          target_capacity           = 90
+        }
+
+        default_capacity_provider_strategy = {
+          weight = 40
+        }
       }
     }
-    # Spot instances
-    ex_2 = {
-      auto_scaling_group_arn         = module.autoscaling["ex_2"].autoscaling_group_arn
-      managed_termination_protection = "ENABLED"
-
-      managed_scaling = {
-        maximum_scaling_step_size = 15
-        minimum_scaling_step_size = 5
-        status                    = "ENABLED"
-        target_capacity           = 90
-      }
-
-      default_capacity_provider_strategy = {
-        weight = 40
-      }
-    }
-  }
+  )
 
   tags = local.tags
 }
@@ -82,14 +85,14 @@ module "ecs_service" {
 
   # Service
   name        = local.name
-  cluster_arn = module.ecs_cluster.arn
+  cluster_arn = module.ecs_cluster.cluster_arn
 
   # Task Definition
   requires_compatibilities = ["EC2"]
   capacity_provider_strategy = {
     # On-demand instances
-    ex_1 = {
-      capacity_provider = module.ecs_cluster.autoscaling_capacity_providers["ex_1"].name
+    pool1 = {
+      capacity_provider = module.ecs_cluster.autoscaling_capacity_providers["pool1"].name
       weight            = 1
       base              = 1
     }
@@ -117,10 +120,8 @@ module "ecs_service" {
           containerPath = "/var/www/my-vol"
         }
       ]
+      "environment" : [for k, v in var.app_env_vars : { "name" : k, "value" : v }]
 
-      entry_point = ["/usr/sbin/apache2", "-D", "FOREGROUND"]
-
-      # Example image used requires access to write to root filesystem
       readonly_root_filesystem = false
 
       enable_cloudwatch_logging              = true
@@ -136,7 +137,7 @@ module "ecs_service" {
 
   load_balancer = {
     service = {
-      target_group_arn = module.alb.target_groups["ex_ecs"].arn
+      target_group_arn = module.alb.target_groups["metabase_ecs"].arn
       container_name   = local.container_name
       container_port   = local.container_port
     }
@@ -202,13 +203,13 @@ module "alb" {
       protocol = "HTTP"
 
       forward = {
-        target_group_key = "ex_ecs"
+        target_group_key = "metabase_ecs"
       }
     }
   }
 
   target_groups = {
-    ex_ecs = {
+    metabase_ecs = {
       backend_protocol                  = "HTTP"
       backend_port                      = local.container_port
       target_type                       = "ip"
@@ -242,7 +243,7 @@ module "autoscaling" {
 
   for_each = merge({
     # On-demand instances
-    ex_1 = {
+    pool1 = {
       instance_type              = var.instance_type_ondemand
       use_mixed_instances_policy = false
       mixed_instances_policy     = {}
@@ -260,7 +261,7 @@ module "autoscaling" {
     },
     # Spot instances
     var.ecs_enable_spot == false ? {} : {
-      ex_2 = {
+      pool2 = {
         instance_type              = var.instance_type_spot
         use_mixed_instances_policy = true
         mixed_instances_policy = {
@@ -346,6 +347,10 @@ module "autoscaling_sg" {
     {
       rule                     = "http-80-tcp"
       source_security_group_id = module.alb.security_group_id
+    },
+    {
+      rule                     = "http-443-tcp"
+      source_security_group_id = module.alb.security_group_id
     }
   ]
   number_of_computed_ingress_with_source_security_group_id = 1
@@ -395,8 +400,8 @@ module "db_default" {
   username = "complete_postgresql"
   port     = 5432
 
-  db_subnet_group_name   = module.vpc.database_subnet_group
-  vpc_security_group_ids = [module.rds_security_group.security_group_id]
+  db_subnet_group_name = module.vpc.database_subnet_group
+  # vpc_security_group_ids = [module.rds_security_group.security_group_id]
 
   maintenance_window      = "Mon:00:00-Mon:03:00"
   backup_window           = "03:00-06:00"
@@ -411,19 +416,18 @@ module "rds_security_group" {
   version = "~> 5.0"
 
   name        = local.name
-  description = "PostgreSQL security group"
+  description = "Autoscaling group security group"
   vpc_id      = module.vpc.vpc_id
 
-  # ingress
-  ingress_with_source_security_group_id = [
+  computed_ingress_with_source_security_group_id = [
     {
-      from_port         = 5432
-      to_port           = 5432
-      protocol          = "tcp"
-      description       = "PostgreSQL access from within ECS Instances (SG)"
-      security_group_id = module.autoscaling_sg.security_group_id
+      rule                     = "postgresql-tcp"
+      source_security_group_id = module.autoscaling_sg.security_group_id
     },
   ]
+  number_of_computed_ingress_with_source_security_group_id = 1
+
+  egress_rules = ["all-all"]
 
   tags = local.tags
 }

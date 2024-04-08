@@ -41,6 +41,7 @@ AWS and ECS Provisioning
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_container_name"></a> [app\_container\_name](#input\_app\_container\_name) | The name for the container | `string` | `"metabase"` | no |
 | <a name="input_app_container_port"></a> [app\_container\_port](#input\_app\_container\_port) | The port on the container | `number` | `3000` | no |
+| <a name="input_app_env_vars"></a> [app\_env\_vars](#input\_app\_env\_vars) | A set of environment variables to be exposed to the container's app | `map(string)` | `{}` | no |
 | <a name="input_app_image"></a> [app\_image](#input\_app\_image) | The image for the app | `string` | `"metabase/metabase:latest"` | no |
 | <a name="input_db_username"></a> [db\_username](#input\_db\_username) | Database to create inside the postgress | `string` | `"metabase"` | no |
 | <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | The cluster name | `string` | n/a | yes |
@@ -82,6 +83,7 @@ AWS and ECS Provisioning
 | <a name="output_db_default_secretsmanager_secret_rotation_enabled"></a> [db\_default\_secretsmanager\_secret\_rotation\_enabled](#output\_db\_default\_secretsmanager\_secret\_rotation\_enabled) | Specifies whether automatic rotation is enabled for the secret |
 | <a name="output_db_default_subnet_group_arn"></a> [db\_default\_subnet\_group\_arn](#output\_db\_default\_subnet\_group\_arn) | The ARN of the db subnet group |
 | <a name="output_db_default_subnet_group_id"></a> [db\_default\_subnet\_group\_id](#output\_db\_default\_subnet\_group\_id) | The db subnet group name |
+| <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | The DNS name of the load balancer |
 | <a name="output_service_autoscaling_policies"></a> [service\_autoscaling\_policies](#output\_service\_autoscaling\_policies) | Map of autoscaling policies and their attributes |
 | <a name="output_service_autoscaling_scheduled_actions"></a> [service\_autoscaling\_scheduled\_actions](#output\_service\_autoscaling\_scheduled\_actions) | Map of autoscaling scheduled actions and their attributes |
 | <a name="output_service_container_definitions"></a> [service\_container\_definitions](#output\_service\_container\_definitions) | Container definitions |

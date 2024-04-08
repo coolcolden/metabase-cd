@@ -1,14 +1,37 @@
-# metabase-cd-aws
+Metabase Test!
+==============
 
 
-Objetivos:
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
 
-1. [ ] A solução deverá utilizar a cloud da AWS;
-2. [ ] A solução deverá utilizar containeres;
-3. [ ] A solução deverá ser escalável horizontalmente, permitindo que a carga seja crescente conforme a demanda;
-4. [ ] O serviço do Metabase deverá estar desacoplado do banco de dados e em subredes diferentes;
-5. [ ] É necessário haver resiliência em múltiplos datacenter;
-6. [ ] A infraestrutura em cloud necessária para rodar este projeto deverá ser automatizada por código;
-7. [ ] Por exigência da gerência, o projeto deverá ter o ciclo de deploy completo e de forma automatizada (CI/CD).
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.7 |
 
+## Providers
 
+No providers.
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_metabase"></a> [metabase](#module\_metabase) | ./modules/ecs_alb | n/a |
+
+## Resources
+
+No resources.
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_region"></a> [region](#input\_region) | The region where to deploy | `string` | `"sa-east-1"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | The DNS name of the load balancer |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
