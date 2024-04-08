@@ -13,7 +13,7 @@ locals {
   vpc_cidr = var.vpc_cidr
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  container_name = "ecs-sample"
+  container_name = "metabase"
   container_port = var.app_container_port
 
   tags = var.tags
@@ -106,6 +106,10 @@ module "ecs_service" {
   container_definitions = {
     (local.container_name) = {
       image = "public.ecr.aws/ecs-sample-image/amazon-ecs-sample:latest"
+
+      cpu    = var.app_cpu
+      memory = var.app_memory
+
       port_mappings = [
         {
           name          = local.container_name

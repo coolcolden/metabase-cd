@@ -41,8 +41,10 @@ AWS and ECS Provisioning
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_container_name"></a> [app\_container\_name](#input\_app\_container\_name) | The name for the container | `string` | `"metabase"` | no |
 | <a name="input_app_container_port"></a> [app\_container\_port](#input\_app\_container\_port) | The port on the container | `number` | `3000` | no |
+| <a name="input_app_cpu"></a> [app\_cpu](#input\_app\_cpu) | CPU to request to ECS in milliCPU, valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html | `number` | `256` | no |
 | <a name="input_app_env_vars"></a> [app\_env\_vars](#input\_app\_env\_vars) | A set of environment variables to be exposed to the container's app | `map(string)` | `{}` | no |
 | <a name="input_app_image"></a> [app\_image](#input\_app\_image) | The image for the app | `string` | `"metabase/metabase:latest"` | no |
+| <a name="input_app_memory"></a> [app\_memory](#input\_app\_memory) | Mempory to allocate, in MB, valid values here, should correlate to `app_cpu`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html | `number` | `512` | no |
 | <a name="input_db_username"></a> [db\_username](#input\_db\_username) | Database to create inside the postgress | `string` | `"metabase"` | no |
 | <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | The cluster name | `string` | n/a | yes |
 | <a name="input_ecs_desired_capacity"></a> [ecs\_desired\_capacity](#input\_ecs\_desired\_capacity) | Desired number of instances on ECS Autoscaling group | `number` | `2` | no |

@@ -49,6 +49,18 @@ variable "app_env_vars" {
   default     = {}
 }
 
+variable "app_cpu" {
+  description = "CPU to request to ECS in milliCPU, valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html"
+  type        = number
+  default     = 256
+}
+
+variable "app_memory" {
+  description = "Mempory to allocate, in MB, valid values here, should correlate to `app_cpu`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html"
+  type        = number
+  default     = 512
+}
+
 variable "instance_type_ondemand" {
   description = "The instance type for the onDemand nodes"
   type        = string
