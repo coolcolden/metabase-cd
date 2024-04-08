@@ -106,6 +106,10 @@ module "ecs_service" {
   container_definitions = {
     (local.container_name) = {
       image = "public.ecr.aws/ecs-sample-image/amazon-ecs-sample:latest"
+
+      cpu    = var.app_cpu
+      memory = var.app_memory
+
       port_mappings = [
         {
           name          = local.container_name
