@@ -124,14 +124,14 @@ module "ecs_service" {
           containerPath = "/var/www/my-vol"
         }
       ]
-      environment : [for k, v in var.app_env_vars : { "name" : k, "value" : v }]
+      environment = [for k, v in var.app_env_vars : { "name" : k, "value" : v }]
 
-      essential : true,
-      healthCheck : {
-        command : ["CMD-SHELL", "curl -f http://localhost/ || exit 1"],
-        interval : 30,
-        timeout : 5,
-        retries : 3
+      essential = true,
+      healthCheck = {
+        command  = ["CMD-SHELL", "curl --fail -I http://localhost:3000/api/health || exit 1"],
+        interval = 30
+        timeout  = 5
+        retries  = 3
       }
 
       readonly_root_filesystem = false
