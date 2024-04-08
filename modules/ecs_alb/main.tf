@@ -105,7 +105,7 @@ module "ecs_service" {
   # Container definition(s)
   container_definitions = {
     (local.container_name) = {
-      image = var.image
+      image = var.app_image
 
       cpu    = var.app_cpu
       memory = var.app_memory
