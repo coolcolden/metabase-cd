@@ -23,7 +23,7 @@ AWS and ECS Provisioning
 | <a name="module_autoscaling"></a> [autoscaling](#module\_autoscaling) | terraform-aws-modules/autoscaling/aws | ~> 6.5 |
 | <a name="module_autoscaling_sg"></a> [autoscaling\_sg](#module\_autoscaling\_sg) | terraform-aws-modules/security-group/aws | ~> 5.0 |
 | <a name="module_db_default"></a> [db\_default](#module\_db\_default) | terraform-aws-modules/rds/aws | ~> 6.5.4 |
-| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | ../../modules/cluster | n/a |
+| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws | 5.11.0 |
 | <a name="module_ecs_service"></a> [ecs\_service](#module\_ecs\_service) | terraform-aws-modules/ecs/aws//modules/service | ~> 5.6 |
 | <a name="module_rds_security_group"></a> [rds\_security\_group](#module\_rds\_security\_group) | terraform-aws-modules/security-group/aws | ~> 5.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.0 |
@@ -49,8 +49,8 @@ AWS and ECS Provisioning
 | <a name="input_ecs_min_size"></a> [ecs\_min\_size](#input\_ecs\_min\_size) | Minimum number of instances on ECS Autoscaling group | `number` | `1` | no |
 | <a name="input_instance_type_ondemand"></a> [instance\_type\_ondemand](#input\_instance\_type\_ondemand) | The instance type for the onDemand nodes | `string` | `"t3.micro"` | no |
 | <a name="input_instance_type_spot"></a> [instance\_type\_spot](#input\_instance\_type\_spot) | The instance type for the Spot nodes | `string` | `"t3.micro"` | no |
-| <a name="input_region"></a> [region](#input\_region) | The region to create all stack | `string` | `"eu-west-1"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to use on resources | `map(list(string))` | <pre>{<br>  "Name": "metabase",<br>  "Repository": "https://github.com/terraform-aws-modules/terraform-aws-ecs"<br>}</pre> | no |
+| <a name="input_region"></a> [region](#input\_region) | The region to create all stack | `string` | `"us-west-1"` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to use on resources | `map(string)` | <pre>{<br>  "Name": "metabase",<br>  "Repository": "https://github.com/terraform-aws-modules/terraform-aws-ecs"<br>}</pre> | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | VPC CIDR | `string` | `"10.0.0.0/16"` | no |
 
 ## Outputs

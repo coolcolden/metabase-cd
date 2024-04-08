@@ -3,7 +3,7 @@
 variable "region" {
   description = "The region to create all stack"
   type        = string
-  default     = "eu-west-1"
+  default     = "us-west-1"
 }
 
 variable "ecs_cluster_name" {
@@ -19,7 +19,7 @@ variable "vpc_cidr" {
 
 variable "tags" {
   description = "Tags to use on resources"
-  type        = map(list(string))
+  type        = map(string)
   default = {
     Name       = "metabase"
     Repository = "https://github.com/terraform-aws-modules/terraform-aws-ecs"
