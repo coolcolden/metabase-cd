@@ -10,7 +10,7 @@ module "metabase" {
   # app_container_port = 8080
 
   ecs_desired_capacity = 1 ## Bump when HA desired.
-  ecs_max_size         = 3
+  ecs_max_size         = 1
 }
 
 
