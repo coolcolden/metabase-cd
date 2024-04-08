@@ -321,7 +321,7 @@ module "autoscaling" {
   vpc_zone_identifier = module.vpc.private_subnets
   health_check_type   = "EC2"
   min_size            = var.ecs_min_size
-  max_size            = 5
+  max_size            = var.ecs_max_size
   desired_capacity    = var.ecs_desired_capacity
 
   # https://github.com/hashicorp/terraform-provider-aws/issues/12582

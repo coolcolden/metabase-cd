@@ -78,6 +78,13 @@ variable "ecs_min_size" {
   type        = number
   default     = 1
 }
+
+variable "ecs_max_size" {
+  description = "Minimum number of instances on ECS Autoscaling group"
+  type        = number
+  default     = 3
+}
+
 variable "ecs_desired_capacity" {
   description = "Desired number of instances on ECS Autoscaling group"
   type        = number
