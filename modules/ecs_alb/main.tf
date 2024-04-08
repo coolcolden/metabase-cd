@@ -17,6 +17,16 @@ locals {
   container_port = var.app_container_port
 
   tags = var.tags
+
+  db_port = 5432
+  db_name = "metabase"
+
+  env_vars_metabase = {
+    "MB_DB_TYPE" : "postgres",
+    "MB_DB_DBNAME" : local.db_name,
+    "MB_DB_PORT" : "${local.db_port}"
+    "MB_DB_HOST" : module.db_default.db_instance_address
+  }
 }
 
 ################################################################################
@@ -124,7 +134,18 @@ module "ecs_service" {
           containerPath = "/var/www/my-vol"
         }
       ]
-      environment = [for k, v in var.app_env_vars : { "name" : k, "value" : v }]
+      environment = [for k, v in merge(local.env_vars_metabase, var.app_env_vars) : { "name" : k, "value" : v }]
+
+      "secrets" : [{
+        "name" : "MB_DB_USER",
+        "valueFrom" : "${module.db_default.db_instance_master_user_secret_arn}:username::"
+        }, {
+        "name" : "MB_DB_PASS",
+        "valueFrom" : "${module.db_default.db_instance_master_user_secret_arn}:password::"
+        }
+      ]
+
+
 
       essential = true,
       healthCheck = {
@@ -409,9 +430,9 @@ module "db_default" {
 
   allocated_storage = 10
 
-  db_name  = "metabase"
+  db_name  = local.db_name
   username = "complete_postgresql"
-  port     = 5432
+  port     = local.db_port
 
   db_subnet_group_name = module.vpc.database_subnet_group
   # vpc_security_group_ids = [module.rds_security_group.security_group_id]
