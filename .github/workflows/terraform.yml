@@ -39,7 +39,7 @@ jobs:
       - name: Terraform outputs
         if: github.ref == 'refs/heads/main'
         run: |
-          echo '# Terraform Output' >> $GITHUB_SUMMARY
-          echo '```' >> $GITHUB_SUMMARY
-          terraform output >> $GITHUB_SUMMARY
-          echo '```' >> $GITHUB_SUMMARY
+          echo '# Terraform Output' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          terraform output >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
