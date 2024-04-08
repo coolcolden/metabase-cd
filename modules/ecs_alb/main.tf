@@ -103,7 +103,7 @@ module "ecs_service" {
   }
 
   cpu    = var.task_cpu
-  memory = var.app_memory
+  memory = var.task_memory
 
   # Container definition(s)
   container_definitions = {
