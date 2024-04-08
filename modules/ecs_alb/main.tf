@@ -33,41 +33,44 @@ module "ecs_cluster" {
 
   # Capacity provider - autoscaling groups
   default_capacity_provider_use_fargate = false
-  autoscaling_capacity_providers = {
-    # On-demand instances
-    ex_1 = {
-      auto_scaling_group_arn         = module.autoscaling["ex_1"].autoscaling_group_arn
-      managed_termination_protection = "ENABLED"
+  autoscaling_capacity_providers = merge(
+    {
+      # On-demand instances
+      pool1 = {
+        auto_scaling_group_arn         = module.autoscaling["pool1"].autoscaling_group_arn
+        managed_termination_protection = "ENABLED"
 
-      managed_scaling = {
-        maximum_scaling_step_size = 5
-        minimum_scaling_step_size = 1
-        status                    = "ENABLED"
-        target_capacity           = 60
+        managed_scaling = {
+          maximum_scaling_step_size = 5
+          minimum_scaling_step_size = 1
+          status                    = "ENABLED"
+          target_capacity           = 60
+        }
+
+        default_capacity_provider_strategy = {
+          weight = 60
+          base   = 20
+        }
       }
+    },
+    var.ecs_enable_spot == false ? {} : {
+      pool2 = {
+        auto_scaling_group_arn         = module.autoscaling["pool2"].autoscaling_group_arn
+        managed_termination_protection = "ENABLED"
 
-      default_capacity_provider_strategy = {
-        weight = 60
-        base   = 20
+        managed_scaling = {
+          maximum_scaling_step_size = 15
+          minimum_scaling_step_size = 5
+          status                    = "ENABLED"
+          target_capacity           = 90
+        }
+
+        default_capacity_provider_strategy = {
+          weight = 40
+        }
       }
     }
-    # Spot instances
-    ex_2 = {
-      auto_scaling_group_arn         = module.autoscaling["ex_2"].autoscaling_group_arn
-      managed_termination_protection = "ENABLED"
-
-      managed_scaling = {
-        maximum_scaling_step_size = 15
-        minimum_scaling_step_size = 5
-        status                    = "ENABLED"
-        target_capacity           = 90
-      }
-
-      default_capacity_provider_strategy = {
-        weight = 40
-      }
-    }
-  }
+  )
 
   tags = local.tags
 }
@@ -88,8 +91,8 @@ module "ecs_service" {
   requires_compatibilities = ["EC2"]
   capacity_provider_strategy = {
     # On-demand instances
-    ex_1 = {
-      capacity_provider = module.ecs_cluster.autoscaling_capacity_providers["ex_1"].name
+    pool1 = {
+      capacity_provider = module.ecs_cluster.autoscaling_capacity_providers["pool1"].name
       weight            = 1
       base              = 1
     }
@@ -240,7 +243,7 @@ module "autoscaling" {
 
   for_each = merge({
     # On-demand instances
-    ex_1 = {
+    pool1 = {
       instance_type              = var.instance_type_ondemand
       use_mixed_instances_policy = false
       mixed_instances_policy     = {}
@@ -258,7 +261,7 @@ module "autoscaling" {
     },
     # Spot instances
     var.ecs_enable_spot == false ? {} : {
-      ex_2 = {
+      pool2 = {
         instance_type              = var.instance_type_spot
         use_mixed_instances_policy = true
         mixed_instances_policy = {
