@@ -9,6 +9,9 @@ on:
       - '**.tf'
       - '.github/workflows/terraform.yml'
 
+permissions:
+  pull-requests: write
+
 jobs:
   terraform:
     name: "Deploy AWS and Application"
