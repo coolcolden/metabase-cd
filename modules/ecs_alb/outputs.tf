@@ -233,3 +233,8 @@ output "db_default_secretsmanager_secret_rotation_enabled" {
   description = "Specifies whether automatic rotation is enabled for the secret"
   value       = module.db_default.db_instance_secretsmanager_secret_rotation_enabled
 }
+
+output "dns_name" {
+  description = "The DNS name of the load balancer"
+  value       = module.alb.dns_name
+}
