@@ -102,13 +102,13 @@ module "ecs_service" {
     my-vol = {}
   }
 
+  cpu    = var.task_cpu
+  memory = var.app_memory
+
   # Container definition(s)
   container_definitions = {
     (local.container_name) = {
       image = var.app_image
-
-      cpu    = var.app_cpu
-      memory = var.app_memory
 
       port_mappings = [
         {
