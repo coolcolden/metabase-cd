@@ -15,8 +15,16 @@ Diagrama:
 Direções
 --------
 
-
 O acesso a aplicação pode ser feito no link provido ao fim do processo do GitHub actions na sessão de [Sumario](https://github.com/coolcolden/metabase-cd-aws/actions)
+
+
+Processo CD
+-----------
+
+Commits devem ser feitos em `branches` e abertas PR para branch `main`.
+Quando de uma PR aberta, o Terraform irá adicionar a essa PR as mudanças planejadas.
+Ao ser feito o `merge` da branch, Terraform será executado novamente, aplicando assim as
+mudanças necessárias ao ambiente como definido no IaC.
 
 
 Documentação Terraform
