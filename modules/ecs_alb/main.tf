@@ -94,7 +94,7 @@ module "ecs_service" {
   version = "~> 5.6"
 
   # Service
-  name        = local.name
+  name        = "${local.name}-task"
   cluster_arn = module.ecs_cluster.cluster_arn
 
   # Task Definition
@@ -167,6 +167,8 @@ module "ecs_service" {
       }
     }
   }
+
+  task_exec_secret_arns = [module.db_default.db_instance_master_user_secret_arn]
 
   load_balancer = {
     service = {
