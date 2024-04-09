@@ -52,7 +52,7 @@ variable "app_env_vars" {
 variable "task_cpu" {
   description = "CPU to request to ECS in milliCPU, valid values, should correlate to `task_memory`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html"
   type        = number
-  default     = 256
+  default     = 1000
 }
 
 variable "task_memory" {
