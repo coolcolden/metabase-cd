@@ -94,7 +94,7 @@ module "ecs_service" {
   version = "~> 5.6"
 
   # Service
-  name        = "${local.name}-task"
+  name        = local.name
   cluster_arn = module.ecs_cluster.cluster_arn
 
   # Task Definition
@@ -425,7 +425,7 @@ module "db_default" {
   create_db_parameter_group = false
 
   engine               = "postgres"
-  engine_version       = "14"
+  engine_version       = "14.10"
   family               = "postgres14" # DB parameter group
   major_engine_version = "14"         # DB option group
   instance_class       = "db.t4g.micro"

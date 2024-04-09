@@ -58,7 +58,7 @@ variable "task_cpu" {
 variable "task_memory" {
   description = "Memory to allocate, in MB, valid values here, should correlate to `task_cpu`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html"
   type        = number
-  default     = 800
+  default     = 950
 }
 
 variable "instance_type_ondemand" {
