@@ -1,6 +1,26 @@
-Metabase Test!
-==============
+Metabase
+========
 
+Projeto com processo de Entraga Continua que provisiona os seguintes items:
+- Aplicação Metabase
+- Service ECS
+- RDS
+- AWS VPC
+- Cluster ECS rodando sobre EC2
+
+Diagrama:
+
+![Diagrama](./docs/metabase.png)
+
+Direções
+--------
+
+
+O acesso a aplicação pode ser feito no link provido ao fim do processo do GitHub actions na sessão de [Sumario](https://github.com/coolcolden/metabase-cd-aws/actions)
+
+
+Documentação Terraform
+======================
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
