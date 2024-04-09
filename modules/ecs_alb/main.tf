@@ -170,6 +170,7 @@ module "ecs_service" {
 
   task_exec_secret_arns = [module.db_default.db_instance_master_user_secret_arn]
 
+
   load_balancer = {
     service = {
       target_group_arn = module.alb.target_groups["metabase_ecs"].arn
@@ -187,6 +188,13 @@ module "ecs_service" {
       protocol                 = "tcp"
       description              = "Service port"
       source_security_group_id = module.alb.security_group_id
+    }
+    egress_all = {
+      type        = "egress"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
     }
   }
 
