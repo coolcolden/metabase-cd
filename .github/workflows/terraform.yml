@@ -39,10 +39,11 @@ jobs:
       - name: Terraform outputs
         if: github.ref == 'refs/heads/main'
         run: |
-          echo '# Terraform Output' >> $GITHUB_STEP_SUMMARY
+          echo '# Terraform Outputs' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           terraform output >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "URL: $(http://terraform output --raw  dns_name)" >> $GITHUB_STEP_SUMMARY
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
