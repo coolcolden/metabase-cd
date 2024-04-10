@@ -463,20 +463,19 @@ module "rds_security_group" {
   description = "Autoscaling group security group"
   vpc_id      = module.vpc.vpc_id
 
-
   # ingress_with_cidr_blocks = [for i in module.vpc.private_subnets_cidr_blocks :
   #   {
   #     rule        = "postgresql-tcp"
   #     cidr_blocks = i
   #   }
   # ]
-  # # computed_ingress_with_source_security_group_id = [
-  # #   {
-  # #     rule                     = "postgresql-tcp"
-  # #     source_security_group_id = module.autoscaling_sg.security_group_id
-  # #   },
-  # # ]
-  # # number_of_computed_ingress_with_source_security_group_id = 1
+  # computed_ingress_with_source_security_group_id = [
+  #   {
+  #     rule                     = "postgresql-tcp"
+  #     source_security_group_id = module.autoscaling_sg.security_group_id
+  #   },
+  # ]
+  # number_of_computed_ingress_with_source_security_group_id = 1
 
   egress_rules = ["all-all"]
 
