@@ -108,9 +108,6 @@ module "ecs_service" {
     }
   }
 
-  volume = {
-    my-vol = {}
-  }
 
   cpu    = var.task_cpu
   memory = var.task_memory
@@ -128,12 +125,6 @@ module "ecs_service" {
         }
       ]
 
-      mount_points = [
-        {
-          sourceVolume  = "my-vol",
-          containerPath = "/var/www/my-vol"
-        }
-      ]
       environment = [for k, v in merge(local.env_vars_metabase, var.app_env_vars) : { "name" : k, "value" : v }]
 
       "secrets" : [{
