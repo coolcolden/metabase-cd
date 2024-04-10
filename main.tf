@@ -9,8 +9,9 @@ module "metabase" {
   # app_image          = "mendhak/http-https-echo"
   # app_container_port = 8080
 
-  ecs_desired_capacity = 1 ## Bump when HA desired.
-  ecs_max_size         = 2
+  ecs_desired_capacity = 2
+  ecs_max_size         = 3
+  min_tasks            = 2
 }
 
 

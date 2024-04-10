@@ -48,10 +48,12 @@ AWS and ECS Provisioning
 | <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | The cluster name | `string` | n/a | yes |
 | <a name="input_ecs_desired_capacity"></a> [ecs\_desired\_capacity](#input\_ecs\_desired\_capacity) | Desired number of instances on ECS Autoscaling group | `number` | `2` | no |
 | <a name="input_ecs_enable_spot"></a> [ecs\_enable\_spot](#input\_ecs\_enable\_spot) | Enable usage of spot instances on a second ASG | `bool` | `false` | no |
-| <a name="input_ecs_max_size"></a> [ecs\_max\_size](#input\_ecs\_max\_size) | Minimum number of instances on ECS Autoscaling group | `number` | `3` | no |
+| <a name="input_ecs_max_size"></a> [ecs\_max\_size](#input\_ecs\_max\_size) | Maximum number of instances on ECS Autoscaling group | `number` | `3` | no |
 | <a name="input_ecs_min_size"></a> [ecs\_min\_size](#input\_ecs\_min\_size) | Minimum number of instances on ECS Autoscaling group | `number` | `1` | no |
 | <a name="input_instance_type_ondemand"></a> [instance\_type\_ondemand](#input\_instance\_type\_ondemand) | The instance type for the onDemand nodes | `string` | `"t3.micro"` | no |
 | <a name="input_instance_type_spot"></a> [instance\_type\_spot](#input\_instance\_type\_spot) | The instance type for the Spot nodes | `string` | `"t3.micro"` | no |
+| <a name="input_max_tasks"></a> [max\_tasks](#input\_max\_tasks) | Maximum number of tasks running the Application | `number` | `3` | no |
+| <a name="input_min_tasks"></a> [min\_tasks](#input\_min\_tasks) | Minimum number of tasks running the Application | `number` | `1` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region to create all stack | `string` | `"us-west-1"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to use on resources | `map(string)` | <pre>{<br>  "Name": "metabase",<br>  "Repository": "https://github.com/terraform-aws-modules/terraform-aws-ecs"<br>}</pre> | no |
 | <a name="input_task_cpu"></a> [task\_cpu](#input\_task\_cpu) | CPU to request to ECS in milliCPU, valid values, should correlate to `task_memory`: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html | `number` | `1500` | no |

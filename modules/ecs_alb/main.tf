@@ -97,6 +97,9 @@ module "ecs_service" {
   name        = local.name
   cluster_arn = module.ecs_cluster.cluster_arn
 
+  autoscaling_min_capacity = var.min_tasks
+  autoscaling_max_capacity = var.max_tasks
+
   # Task Definition
   requires_compatibilities = ["EC2"]
   capacity_provider_strategy = {

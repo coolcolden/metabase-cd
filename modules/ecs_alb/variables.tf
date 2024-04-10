@@ -80,7 +80,19 @@ variable "ecs_min_size" {
 }
 
 variable "ecs_max_size" {
-  description = "Minimum number of instances on ECS Autoscaling group"
+  description = "Maximum number of instances on ECS Autoscaling group"
+  type        = number
+  default     = 3
+}
+
+variable "min_tasks" {
+  description = "Minimum number of tasks running the Application"
+  type        = number
+  default     = 1
+}
+
+variable "max_tasks" {
+  description = "Maximum number of tasks running the Application"
   type        = number
   default     = 3
 }
