@@ -5,7 +5,7 @@ module "metabase" {
   source = "./modules/ecs_alb"
 
   region           = "sa-east-1"
-  ecs_cluster_name = "cluster01"
+  ecs_cluster_name = "cluster02"
   # app_image          = "mendhak/http-https-echo"
   # app_container_port = 8080
 
