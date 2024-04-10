@@ -27,6 +27,15 @@ Ao ser feito o `merge` da branch, Terraform será executado novamente, aplicando
 mudanças necessárias ao ambiente como definido no IaC.
 
 
+Acesso a Instância EC2
+----------------------
+
+AWS Systems Manager está habilitado nas Instâncias.
+
+```
+aws ssm start-session --target i-0b569a00a8cf70dbe
+```
+
 Documentação Terraform
 ======================
 
