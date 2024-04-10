@@ -10,10 +10,9 @@ module "metabase" {
   # app_container_port = 8080
 
   ecs_desired_capacity = 2
-  ecs_max_size         = 3
+  ecs_max_size         = 4
   min_tasks            = 2
 }
-
 
 output "dns_name" {
   description = "The DNS name of the load balancer"
