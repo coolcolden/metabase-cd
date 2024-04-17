@@ -8,6 +8,11 @@ on:
     paths:
       - '**.tf'
       - '.github/workflows/terraform.yml'
+  workflow_dispatch:
+    inputs:
+      authorization:
+        description: 'Auth code provided'
+        required: true
 
 permissions:
   pull-requests: write
@@ -19,6 +24,19 @@ jobs:
     env:
       TF_WORKSPACE: "default"
     steps:
+
+      - name: process dispatch should fail if not authorized
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          echo ::add-mask::${{secrets.GH_DISPATCH_AUTH}}
+          if ! [[ "$user_authorization" = "${{secrets.GH_DISPATCH_AUTH}}" ]]; then
+            echo "autorization code not valid"
+            exit 1
+          fi
+        env:
+          user_authorization: ${{github.event.inputs.authorization}}
+
       - name: Checkout
         uses: actions/checkout@v4
 
