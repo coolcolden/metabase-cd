@@ -14,6 +14,8 @@ on:
         description: 'Auth code provided'
         required: true
 
+name: CD process
+
 permissions:
   pull-requests: write
 
@@ -31,7 +33,7 @@ jobs:
         run: |
           echo ::add-mask::${{secrets.GH_DISPATCH_AUTH}}
           if ! [[ "$user_authorization" = "${{secrets.GH_DISPATCH_AUTH}}" ]]; then
-            echo "autorization code not valid"
+            echo "::error::autorization code not valid"
             exit 1
           fi
         env:
